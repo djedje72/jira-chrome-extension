@@ -1,9 +1,28 @@
-(function() {
-    function fixWidth(width) {
+let init = false;
+
+$(function() {
+    const $jira = $('body#jira');
+    if($jira.length > 0) {
+        if(!init) {
+            fixWidth();
+        }
+        $jira.click(fixWidth);
+    }
+});
+
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+    if(request.type === "refresh") {
+        fixWidth(request.value);
+    }
+});
+
+function fixWidth(width) {
+    init = true;
+    $(function() {
         const $ghxPoolColumn = $("#ghx-pool-column");
         if($ghxPoolColumn.length > 0) {
             $ghxPoolColumn.css({
-                 //"overflow-x": "scroll"
+                    //"overflow-x": "scroll"
             });
 
             const $ghxPool = $ghxPoolColumn.find("#ghx-pool");
@@ -22,19 +41,5 @@
                 "position": "initial"
             });
         }
-    }
-
-    chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-        if(request.type === "refresh") {
-            fixWidth(request.value);
-        }
     });
-
-    $(function() {
-        const $jira = $('body#jira');
-        if($jira.length > 0) {
-            fixWidth();
-            $jira.click(fixWidth);
-        }
-    });
-})();
+}

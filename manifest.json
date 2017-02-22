@@ -1,0 +1,14 @@
+{
+"name":"HackJIRA",
+"version":"0.0.1",
+"manifest_version":2,
+"browser_action": {
+    "default_popup": "index.html"
+},
+"content_scripts": [
+    {
+        "js": [ "jquery-3.1.1.min.js", "content.js" ],
+        "matches": [ "http://*/*", "https://*/*"]
+    }
+  ]
+}

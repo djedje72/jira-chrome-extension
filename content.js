@@ -18,25 +18,31 @@ function fixWidth() {
     $(function() {
         const $ghxPoolColumn = $("#ghx-pool-column");
         if($ghxPoolColumn.length > 0) {
-            $ghxPoolColumn.css({
-                    //"overflow-x": "scroll"
-            });
 
             const $ghxPool = $ghxPoolColumn.find("#ghx-pool");
             $ghxPool.css({
                 "padding-top": 0,
-                //"width": "4000px",
                 "height": "100%"
             });
             $ghxPool.find("li").css({
                 "width": `${width?width:200}px`
-            })
+            });
+
+            $ghxPool.find(".ui-draggable").mousedown(function() {
+                setTimeout(function() {
+                    $ghxPool.scrollLeft($ghxPool.scrollLeft()+1);
+                    $ghxPool.scrollLeft($ghxPool.scrollLeft()-1);
+                    $ghxPool.find(".ghx-drag-in-progress .ghx-zone-overlay-column").css({
+                        "width": `${width?width:200}px`
+                    });
+                }, 300);
+            });
 
             const $ghxColumnHeaderGroup = $ghxPool.find("#ghx-column-header-group");
             $ghxColumnHeaderGroup.css({
-                // "width": "4000px",
                 "position": "initial"
             });
+
         }
     });
 }

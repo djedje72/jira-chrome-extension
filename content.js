@@ -1,23 +1,20 @@
-let init = false;
-
 $(function() {
     const $jira = $('body#jira');
     if($jira.length > 0) {
-        if(!init) {
-            fixWidth();
-        }
-        $jira.click(fixWidth);
+        $jira.click(() => fixWidth());
     }
 });
-
+let width = 200;
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if(request.type === "refresh") {
-        fixWidth(request.value);
+        if(request.value) {
+            width = request.value;
+        }
+        fixWidth();
     }
 });
 
-function fixWidth(width) {
-    init = true;
+function fixWidth() {
     $(function() {
         const $ghxPoolColumn = $("#ghx-pool-column");
         if($ghxPoolColumn.length > 0) {

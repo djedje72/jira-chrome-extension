@@ -4,6 +4,10 @@ $(function() {
             fixWidth();
         }
     }, 50);
+
+    $('.ghx-swimlane-header').click(function() {
+        fixWidth();
+    });
 });
 let width = 200;
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
@@ -29,6 +33,11 @@ function fixWidth() {
                 "width": `${width?width:200}px`
             });
 
+            followScroll($ghxPool);
+            $ghxPool.off('scroll').on('scroll', function() {
+                followScroll($(this));
+            });
+
             const $uiDraggable = $ghxPool.find(".ui-draggable");
             $uiDraggable.attr('jira-chrome-extension', 'done');
             $uiDraggable.off('mousedown').on('mousedown', function() {
@@ -49,10 +58,28 @@ function fixWidth() {
                 }, 50);
             });
 
-            const $ghxColumnHeaderGroup = $ghxPool.find("#ghx-column-header-group");
-            $ghxColumnHeaderGroup.css({
-                "position": "initial"
+            // const $ghxColumnHeaderGroup = $ghxPool.find("#ghx-column-header-group");
+            // $ghxPool.find('.ghx-first').css({
+            //     // "position": "initial"
+            //     "padding-top": "50px"
+            // });
+
+            $ghxPool.css({
+                "padding-top": "50px"
             });
         }
     });
+
+    function followScroll($ghxPool) {
+        const $ghxColumnHeaderGroup = $ghxPool.find("#ghx-column-header-group");
+        $ghxColumnHeaderGroup.css({
+            "overflow": "hidden"
+        })
+        $ghxColumnHeaders = $ghxColumnHeaderGroup.find("#ghx-column-headers");
+
+        $ghxColumnHeaders.css({
+            "position": "relative",
+            "left": `-${$ghxPool.scrollLeft()}px`
+        });
+    }
 }

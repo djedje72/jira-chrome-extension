@@ -58,12 +58,6 @@ function fixWidth() {
                 }, 50);
             });
 
-            // const $ghxColumnHeaderGroup = $ghxPool.find("#ghx-column-header-group");
-            // $ghxPool.find('.ghx-first').css({
-            //     // "position": "initial"
-            //     "padding-top": "50px"
-            // });
-
             $ghxPool.css({
                 "padding-top": "50px"
             });

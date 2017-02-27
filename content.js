@@ -38,6 +38,12 @@ function fixWidth() {
                 followScroll($(this));
             });
 
+            const $ghxDetailContents = $('#ghx-detail-contents');
+            $ghxDetailContents.css({
+                "position": "fixed",
+                "z-index": 2
+            });
+
             const $uiDraggable = $ghxPool.find(".ui-draggable");
             $uiDraggable.attr('jira-chrome-extension', 'done');
             $uiDraggable.off('mousedown').on('mousedown', function() {

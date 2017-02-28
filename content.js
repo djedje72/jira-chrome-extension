@@ -37,6 +37,10 @@ function fixWidth() {
             $ghxPool.off('scroll').on('scroll', function() {
                 followScroll($(this));
             });
+            const $firstSwimlane = $ghxPool.find('.ghx-swimlane.ghx-first');
+            $firstSwimlane.css({
+                "padding-top": "20px"
+            });
 
             const $ghxDetailContents = $('#ghx-detail-contents');
             $ghxDetailContents.css({
@@ -75,8 +79,21 @@ function fixWidth() {
         $ghxColumnHeaderGroup.css({
             "overflow": "hidden"
         })
-        $ghxColumnHeaders = $ghxColumnHeaderGroup.find("#ghx-column-headers");
+        const $ghxColumnHeaders = $ghxColumnHeaderGroup.find("#ghx-column-headers");
+        //$jsSwimlaneHeaderStalker = $('js-swimlane-header-stalker');
+        const $floatGhxSwimlaneHeader = $('#js-swimlane-header-stalker:visible .ghx-swimlane-header');
+        const currentSwimlaneId = $floatGhxSwimlaneHeader.attr('data-swimlane-id');
 
+        const $ghxSwimlaneHeader = $ghxPool.find('.ghx-swimlane > .ghx-swimlane-header');
+        $ghxSwimlaneHeader.css({
+            "position": "relative",
+            "left": `${$ghxPool.scrollLeft()}px`
+        });
+        
+        $ghxPool.find(`[data-swimlane-id=${currentSwimlaneId}]`).not($floatGhxSwimlaneHeader).css({
+            "position": "",
+            "left": ""
+        })
         $ghxColumnHeaders.css({
             "position": "relative",
             "left": `-${$ghxPool.scrollLeft()}px`

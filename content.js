@@ -37,9 +37,12 @@ function fixWidth() {
             $ghxPool.off('scroll').on('scroll', function() {
                 followScroll($(this));
             });
+
+            const $ghxColumnHeaderGroup = $ghxPool.find("#ghx-column-header-group");
+            
             const $firstSwimlane = $ghxPool.find('.ghx-swimlane.ghx-first');
             $firstSwimlane.css({
-                "padding-top": "20px"
+                "padding-top": `${$ghxColumnHeaderGroup.height()}px`
             });
 
             const $ghxDetailContents = $('#ghx-detail-contents');
@@ -48,7 +51,7 @@ function fixWidth() {
                 "z-index": 2
             });
 
-            const $uiDraggable = $ghxPool.find(".ui-draggable");
+            const $uiDraggable = $ghxPool.find(".ui-draggable, .js-parent-drag");
             $uiDraggable.attr('jira-chrome-extension', 'done');
             $uiDraggable.off('mousedown').on('mousedown', function() {
                 let maxLoop = 20;
@@ -67,10 +70,6 @@ function fixWidth() {
                     }
                 }, 50);
             });
-
-            $ghxPool.css({
-                "padding-top": "50px"
-            });
         }
     });
 
@@ -78,7 +77,7 @@ function fixWidth() {
         const $ghxColumnHeaderGroup = $ghxPool.find("#ghx-column-header-group");
         $ghxColumnHeaderGroup.css({
             "overflow": "hidden"
-        })
+        });
         const $ghxColumnHeaders = $ghxColumnHeaderGroup.find("#ghx-column-headers");
         //$jsSwimlaneHeaderStalker = $('js-swimlane-header-stalker');
         const $floatGhxSwimlaneHeader = $('#js-swimlane-header-stalker:visible .ghx-swimlane-header');

@@ -1,13 +1,17 @@
 $(function() {
-    setInterval(() => {
-        if($('#ghx-pool [jira-chrome-extension]').length === 0) {
-            fixWidth();
-        }
-    }, 50);
+    if ($("body").attr("id") === "jira") {
+        setInterval(() => {
+            if($('#ghx-pool [jira-chrome-extension]').length === 0) {
+                fixWidth();
+            }
+        }, 50);
 
-    $('.ghx-swimlane-header').click(function() {
-        fixWidth();
-    });
+        $('.ghx-swimlane-header').click(function() {
+            fixWidth();
+        });
+    } else {
+        console.log("[jira-chrome-extension] Not a jira page.");
+    }
 });
 let width = 200;
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {

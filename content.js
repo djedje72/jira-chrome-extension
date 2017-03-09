@@ -1,5 +1,6 @@
 $(function() {
     if ($("body").attr("id") === "jira") {
+        console.log("[jira-chrome-extension] Current page is a JIRA page.");
         setInterval(() => {
             if($('#ghx-pool [jira-chrome-extension]').length === 0) {
                 fixWidth();
@@ -9,8 +10,6 @@ $(function() {
         $('.ghx-swimlane-header').click(function() {
             fixWidth();
         });
-    } else {
-        console.log("[jira-chrome-extension] Not a jira page.");
     }
 });
 let width = 200;

@@ -1,11 +1,56 @@
 $(function() {
     if ($("body").attr("id") === "jira") {
         console.log("[jira-chrome-extension] Current page is a JIRA page.");
-        setInterval(() => {
-            if($('#ghx-pool [jira-chrome-extension]').length === 0) {
-                fixWidth();
-            }
-        }, 50);
+
+        function dragInterval($ghxPool) {
+            let maxLoop = 20;
+            const interval = setInterval(function() {
+                const $columns = $ghxPool.find(".ghx-drag-in-progress .ghx-zone-overlay-column");
+                if($columns.length > 0) {
+                    $ghxPool.scrollLeft($ghxPool.scrollLeft()+1);
+                    $ghxPool.scrollLeft($ghxPool.scrollLeft()-1);
+                    $columns.css({
+                        "width": `${width?width:200}px`
+                    });
+                    clearInterval(interval);
+                }
+                if(maxLoop-- <= 0) {
+                    clearInterval(interval);
+                }
+            }, 50);
+        }
+
+        function dragEndInterval($this) {
+            let maxLoop = 20;
+            const interval = setInterval(function() {
+                if(!$this.is(':visible')) {
+                    clearInterval(interval);
+                    loadingInterval();
+                }
+                if(maxLoop-- <= 0) {
+                    clearInterval(interval);
+                }
+            }, 500);
+        }
+
+        function loadingInterval() {
+            let maxLoop = 20;
+            const interval = setInterval(function() {
+                if($('body.ghx-loading-pool').length === 0) {
+                    clearInterval(interval);
+                    fixWidth();
+                }
+                if(maxLoop-- <= 0) {
+                    clearInterval(interval);
+                }
+            }, 100);
+        }
+        const $ghxPool = $('#ghx-pool');
+        $ghxPool.on('mousedown', '.ui-draggable, .js-parent-drag', function() {
+            const $this = $(this);
+            dragInterval($ghxPool);
+            dragEndInterval($this);
+        });
 
         $('.ghx-swimlane-header').click(function() {
             fixWidth();
@@ -56,23 +101,6 @@ function fixWidth() {
 
             const $uiDraggable = $ghxPool.find(".ui-draggable, .js-parent-drag");
             $uiDraggable.attr('jira-chrome-extension', 'done');
-            $uiDraggable.off('mousedown').on('mousedown', function() {
-                let maxLoop = 20;
-                const interval = setInterval(function() {
-                    const $columns = $ghxPool.find(".ghx-drag-in-progress .ghx-zone-overlay-column");
-                    if($columns.length > 0) {
-                        $ghxPool.scrollLeft($ghxPool.scrollLeft()+1);
-                        $ghxPool.scrollLeft($ghxPool.scrollLeft()-1);
-                        $columns.css({
-                            "width": `${width?width:200}px`
-                        });
-                        clearInterval(interval);
-                    }
-                    if(maxLoop-- <= 0) {
-                        clearInterval(interval);
-                    }
-                }, 50);
-            });
         }
     });
 

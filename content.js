@@ -22,7 +22,7 @@
             }
 
             function dragEndInterval($this) {
-                let maxLoop = 20;
+                let maxLoop = 1000;
                 const interval = setInterval(function() {
                     if(!$this.is(':visible')) {
                         clearInterval(interval);
@@ -31,11 +31,11 @@
                     if(maxLoop-- <= 0) {
                         clearInterval(interval);
                     }
-                }, 500);
+                }, 200);
             }
 
             function loadingInterval() {
-                let maxLoop = 20;
+                let maxLoop = 1000;
                 const interval = setInterval(function() {
                     if(!$('body').hasClass('ghx-loading-pool')) {
                         clearInterval(interval);
@@ -44,7 +44,7 @@
                     if(maxLoop-- <= 0) {
                         clearInterval(interval);
                     }
-                }, 100);
+                }, 200);
             }
             const $ghxPool = $('#ghx-pool-column #ghx-pool');
             $ghxPool.on('scroll', function() {
@@ -60,7 +60,7 @@
                 loadingInterval();
                 fixWidth();
             });
-            
+
             //fix width when open page
             fixWidth();
         }

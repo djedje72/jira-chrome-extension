@@ -60,6 +60,9 @@
                 loadingInterval();
                 fixWidth();
             });
+            
+            //fix width when open page
+            fixWidth();
         }
     });
     let width = 200;

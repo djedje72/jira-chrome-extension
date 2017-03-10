@@ -63,6 +63,9 @@
 
             //fix width when open page
             fixWidth();
+            setInterval(function() {
+                fixWidth();
+            }, 2000);
         }
     });
     let width = 200;

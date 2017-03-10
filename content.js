@@ -56,7 +56,7 @@
                 dragEndInterval($this);
             });
 
-            $(document).click(function() {
+            $(document).on('mouseup', function() {
                 loadingInterval();
                 fixWidth();
             });

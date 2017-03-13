@@ -3,9 +3,11 @@
         if ($("body").attr("id") === "jira") {
             console.log("[jira-chrome-extension] Current page is a JIRA page.");
 
-            function dragInterval($ghxPool) {
+            let dragInterval;
+            function drag($ghxPool) {
+                clearInterval(dragInterval);
                 let maxLoop = 20;
-                const interval = setInterval(function() {
+                dragInterval = setInterval(function() {
                     const $columns = $ghxPool.find(".ghx-drag-in-progress .ghx-zone-overlay-column");
                     if($columns.length > 0) {
                         $ghxPool.scrollLeft($ghxPool.scrollLeft()+1);
@@ -13,36 +15,43 @@
                         $columns.css({
                             "width": `${width?width:200}px`
                         });
-                        clearInterval(interval);
+                        clearInterval(dragInterval);
                     }
                     if(maxLoop-- <= 0) {
-                        clearInterval(interval);
+                        clearInterval(dragInterval);
                     }
                 }, 50);
             }
 
-            function dragEndInterval($this) {
+            let dragEndInterval;
+            function dragEnd($this, callback) {
+                clearInterval(dragEndInterval);
                 let maxLoop = 1000;
-                const interval = setInterval(function() {
+                dragEndInterval = setInterval(function() {
                     if(!$this.is(':visible')) {
-                        clearInterval(interval);
-                        loadingInterval();
+                        clearInterval(dragEndInterval);
+                        loading(callback);
                     }
                     if(maxLoop-- <= 0) {
-                        clearInterval(interval);
+                        clearInterval(dragEndInterval);
                     }
                 }, 200);
             }
 
-            function loadingInterval() {
+            let loadingInterval;
+            function loading(callback) {
+                clearInterval(loadingInterval);
                 let maxLoop = 1000;
-                const interval = setInterval(function() {
+                loadingInterval = setInterval(function() {
                     if(!$('body').hasClass('ghx-loading-pool')) {
-                        clearInterval(interval);
+                        clearInterval(loadingInterval);
                         fixWidth();
+                        if(callback) {
+                            callback();
+                        }
                     }
                     if(maxLoop-- <= 0) {
-                        clearInterval(interval);
+                        clearInterval(loadingInterval);
                     }
                 }, 200);
             }
@@ -50,15 +59,21 @@
             $ghxPool.on('scroll', function() {
                 followScroll($(this));
             });
+
             $ghxPool.on('mousedown', '.ui-draggable, .js-parent-drag', function() {
+                drag($ghxPool);
+            });
+
+            $ghxPool.on('mouseup', '.ui-draggable, .js-parent-drag', function() {
+                const previousScrollLeft = $ghxPool.scrollLeft();
                 const $this = $(this);
-                dragInterval($ghxPool);
-                dragEndInterval($this);
+                dragEnd($this, () => {
+                    $ghxPool.scrollLeft(previousScrollLeft);
+                });
             });
 
             $(document).on('mouseup', function() {
-                loadingInterval();
-                fixWidth();
+                loading();
             });
 
             //fix width when open page
@@ -74,43 +89,40 @@
             if(request.value) {
                 width = request.value;
             }
-            fixWidth();
+            $(function() {
+                fixWidth();
+            });
         }
     });
 
     function fixWidth() {
-        $(function() {
-            const $ghxPoolColumn = $("#ghx-pool-column");
-            if($ghxPoolColumn.length > 0) {
+        const $ghxPoolColumn = $("#ghx-pool-column");
+        if($ghxPoolColumn.length > 0) {
 
-                const $ghxPool = $ghxPoolColumn.find("#ghx-pool");
-                $ghxPool.css({
-                    "padding-top": 0,
-                    "height": "100%"
-                });
-                $ghxPool.find("li").css({
-                    "width": `${width?width:200}px`
-                });
+            const $ghxPool = $ghxPoolColumn.find("#ghx-pool");
+            $ghxPool.css({
+                "padding-top": 0,
+                "height": "100%"
+            });
+            $ghxPool.find("li").css({
+                "width": `${width?width:200}px`
+            });
 
-                followScroll($ghxPool);
+            followScroll($ghxPool);
 
-                const $ghxColumnHeaderGroup = $ghxPool.find("#ghx-column-header-group");
-                
-                const $firstSwimlane = $ghxPool.find('.ghx-swimlane.ghx-first');
-                $firstSwimlane.css({
-                    "padding-top": `${$ghxColumnHeaderGroup.height()}px`
-                });
+            const $ghxColumnHeaderGroup = $ghxPool.find("#ghx-column-header-group");
+            
+            const $firstSwimlane = $ghxPool.find('.ghx-swimlane.ghx-first');
+            $firstSwimlane.css({
+                "padding-top": `${$ghxColumnHeaderGroup.height()}px`
+            });
 
-                const $ghxDetailContents = $('#ghx-detail-contents');
-                $ghxDetailContents.css({
-                    "position": "fixed",
-                    "z-index": 2
-                });
-
-                const $uiDraggable = $ghxPool.find(".ui-draggable, .js-parent-drag");
-                $uiDraggable.attr('jira-chrome-extension', 'done');
-            }
-        });
+            const $ghxDetailContents = $('#ghx-detail-contents');
+            $ghxDetailContents.css({
+                "position": "fixed",
+                "z-index": 2
+            });
+        }
     }
     function followScroll($ghxPool) {
         const $ghxColumnHeaderGroup = $ghxPool.find("#ghx-column-header-group");
@@ -118,7 +130,7 @@
             "overflow": "hidden"
         });
         const $ghxColumnHeaders = $ghxColumnHeaderGroup.find("#ghx-column-headers");
-        //$jsSwimlaneHeaderStalker = $('js-swimlane-header-stalker');
+        
         const $floatGhxSwimlaneHeader = $('#js-swimlane-header-stalker:visible .ghx-swimlane-header');
         const currentSwimlaneId = $floatGhxSwimlaneHeader.attr('data-swimlane-id');
 

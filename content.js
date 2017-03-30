@@ -2,6 +2,14 @@
     $(function() {
         if ($("body").attr("id") === "jira") {
             console.log("[jira-chrome-extension] Current page is a JIRA page.");
+            function injectScript(file, node) {
+                var th = document.getElementsByTagName(node)[0];
+                var s = document.createElement('script');
+                s.setAttribute('type', 'text/javascript');
+                s.setAttribute('src', file);
+                th.appendChild(s);
+            }
+            injectScript( chrome.extension.getURL('inject.js'), 'body');
 
             let dragInterval;
             function drag($ghxPool) {
@@ -95,7 +103,7 @@
         }
     });
 
-    function fixWidth() {
+    function fixBoard() {
         const $ghxPoolColumn = $("#ghx-pool-column");
         if($ghxPoolColumn.length > 0) {
 
@@ -123,6 +131,22 @@
                 "z-index": 2
             });
         }
+    }
+
+    function fixConfig() {
+        const $ghxConfigColumns = $("#ghx-config-columns");
+        if($ghxConfigColumns.length > 0) {
+            const $ghxMapping = $ghxConfigColumns.find("#ghx-mapping");
+            const $ghxConfigStatus = $ghxMapping.find(".ghx-config-status");
+            $ghxConfigStatus.css({width: `${width}px`});
+            $ghxMapping.css({width: `${width * $ghxConfigStatus.length + 100}px`});
+            $ghxConfigColumns.css({"overflow": "auto"});
+        }
+    }
+
+    function fixWidth() {
+        fixBoard();
+        fixConfig();
     }
     function followScroll($ghxPool) {
         const $ghxColumnHeaderGroup = $ghxPool.find("#ghx-column-header-group");

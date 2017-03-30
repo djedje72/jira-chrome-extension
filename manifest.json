@@ -15,6 +15,9 @@
             "matches": [ "http://*/*", "https://*/*"]
         }
     ],
+    "web_accessible_resources": [
+        "inject.js"
+    ],
     "background": {
         "scripts": ["jquery-3.1.1.min.js", "background.js"]
     }

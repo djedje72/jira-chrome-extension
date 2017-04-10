@@ -63,20 +63,25 @@
                     }
                 }, 200);
             }
-            const $ghxPool = $('#ghx-pool-column #ghx-pool');
-            $ghxPool.on('scroll', function() {
-                followScroll($(this));
+            const $document = $(document);
+            const ghxPoolSelector = '#ghx-pool-column #ghx-pool';
+            const draggableSelector = `${ghxPoolSelector} .ui-draggable, ${ghxPoolSelector} .js-parent-drag`;
+
+            document.addEventListener('scroll', function (event) {
+                if (event.target.id === 'ghx-pool') { // or any other filtering condition        
+                    followScroll($(event.target));
+                }
+            }, true);
+
+            $document.on('mousedown', draggableSelector, function() {
+                drag($(ghxPoolSelector));
             });
 
-            $ghxPool.on('mousedown', '.ui-draggable, .js-parent-drag', function() {
-                drag($ghxPool);
-            });
-
-            $ghxPool.on('mouseup', '.ui-draggable, .js-parent-drag', function() {
-                const previousScrollLeft = $ghxPool.scrollLeft();
+            $document.on('mouseup', draggableSelector, function() {
+                const previousScrollLeft = $(ghxPoolSelector).scrollLeft();
                 const $this = $(this);
                 dragEnd($this, () => {
-                    $ghxPool.scrollLeft(previousScrollLeft);
+                    $(ghxPoolSelector).scrollLeft(previousScrollLeft);
                 });
             });
 
